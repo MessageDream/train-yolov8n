@@ -10,7 +10,7 @@ params = task.get_parameters()
 model_variant = params["Args/model_variant"]
 tain_ds_id = params["Args/tain_ds_id"]
 val_ds_id = params["Args/val_ds_id"]
-epochs = params["Args/epochs"]
+epochs = int(params["Args/epochs"]) if params["Args/epochs"] else params["Args/epochs"]
 
 
 train_ds = Dataset.get(
