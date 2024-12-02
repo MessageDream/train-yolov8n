@@ -8,8 +8,7 @@ task = Task.get_task(project_name='DevOps', task_name='Yolo8n Remote Training')
 output_model = OutputModel(task=task, framework="PyTorch")
 params = task.get_parameters()
 model_variant = params["Args/model_variant"]
-tain_ds_id = params["Args/tain_ds_id"]
-val_ds_id = params["Args/val_ds_id"]
+tain_ds_id = params["Args/ds_id"]
 epochs = int(params["Args/epochs"]) if params["Args/epochs"] else params["Args/epochs"]
 
 
@@ -18,16 +17,12 @@ train_ds = Dataset.get(
 )
 train_ds_dir = train_ds.get_local_copy()
 
-val_ds = Dataset.get(
-        dataset_id=val_ds_id
-)
-val_ds_dir = val_ds.get_local_copy()
-
 data_config = {
-    'train': train_ds_dir,   # 训练图片的路径
-    'val': val_ds_dir,       # 验证图片的路径
-    'nc': 1,                 # 类别数量
-    'names': ['alpaca']      # 类别名称
+    'path': train_ds_dir,
+    'train': 'train',
+    'val': 'validation',
+    'test': 'test',
+    'names': ['alpaca']
 }
 
 # 保存字典为临时 YAML 文件
