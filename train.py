@@ -4,10 +4,10 @@ from clearml import Task,Dataset,OutputModel
 task = Task.get_task(project_name='DevOps', task_name='Yolo8n Remote Training')
 output_model = OutputModel(task=task, framework="PyTorch")
 params = task.get_parameters()
-model_variant = params["model_variant"]
-tain_ds_id = params["tain_ds_id"]
-val_ds_id = params["val_ds_id"]
-epochs = params["epochs"]
+model_variant = params["Args/model_variant"]
+tain_ds_id = params["Args/tain_ds_id"]
+val_ds_id = params["Args/val_ds_id"]
+epochs = params["Args/epochs"]
 
 model = YOLO(f"{model_variant}.yaml")  # build a new model from scratch
 
