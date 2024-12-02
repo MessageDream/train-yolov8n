@@ -45,7 +45,8 @@ print("Training completed results:", results)
 
 # 上传训练完成的 PyTorch 模型
 output_model = OutputModel(task=task,name=f"{task.name}-pt", comment="PyTorch", framework="PyTorch")
-output_model.update_weights(weights_filename='best.pt')
+uploaded_model_uri = output_model.update_weights(weights_filename='best.pt')
+print(f"PyTorch model uploaded to {uploaded_model_uri}")
 # output_model.publish()  # 可选：将 PyTorch 模型发布
 
 # 转换模型为 ONNX 格式
@@ -55,7 +56,8 @@ onnx_name = path.basename(onnx_path)
 
 # 上传 ONNX 模型到 ClearML
 output_model_onnx = OutputModel(task=task,name=f"{task.name}_onnx",comment="ONNX", framework="ONNX")
-output_model_onnx.update_weights(weights_filename=onnx_name)
+uploaded_onnx_model_uri = output_model_onnx.update_weights(weights_filename=onnx_name)
+print(f"ONNX model uploaded to {uploaded_onnx_model_uri}")
 # output_model_onnx.publish()  # 可选：将 ONNX 模型发布
 
 # 上传 ONNX 模型作为任务的附加 Artifact
