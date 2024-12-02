@@ -9,7 +9,7 @@ output_model = OutputModel(task=task, framework="PyTorch")
 params = task.get_parameters()
 model_variant = params["Args/model_variant"]
 tain_ds_id = params["Args/ds_id"]
-epochs = int(params["Args/epochs"]) if params["Args/epochs"] else params["Args/epochs"]
+epochs = int(params["Args/epochs"])
 
 
 train_ds = Dataset.get(
@@ -36,5 +36,23 @@ from ultralytics import YOLO
 model = YOLO(f"{model_variant}.yaml")  # build a new model from scratch
 
 results = model.train(**args)
+
+# 上传训练完成的 PyTorch 模型
+output_model.update_weights(weights_filename=f"{model_variant}.pt")
+# output_model.publish()  # 可选：将 PyTorch 模型发布
+
+# 转换模型为 ONNX 格式
+onnx_name = f"{model_variant}.onnx"
+onnx_path = model.export(format="onnx", dynamic=True, opset=16)  # 导出 ONNX 模型
+
+# 上传 ONNX 模型到 ClearML
+output_model_onnx = OutputModel(task=task, framework="ONNX")
+output_model_onnx.update_weights(weights_filename=onnx_name)
+# output_model_onnx.publish()  # 可选：将 ONNX 模型发布
+
+# 上传 ONNX 模型作为任务的附加 Artifact
+task.upload_artifact(name="onnx_model", artifact_object=onnx_path)
+
+print("Training and model export complete. Models uploaded to ClearML.")
 
 
