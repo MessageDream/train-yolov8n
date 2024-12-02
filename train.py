@@ -1,7 +1,7 @@
 from ultralytics import YOLO
 from clearml import Task,Dataset,OutputModel
 
-task = Task.get_task(task_id="auto")
+task = Task.get_task(project_name='DevOps', task_name='Yolo8n Remote Training')
 output_model = OutputModel(task=task, framework="PyTorch")
 params = task.get_parameters()
 model_variant = params["model_variant"]
