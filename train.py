@@ -1,5 +1,8 @@
-from ultralytics import YOLO
+import yaml
+import tempfile
+
 from clearml import Task,Dataset,OutputModel
+
 
 task = Task.get_task(project_name='DevOps', task_name='Yolo8n Remote Training')
 output_model = OutputModel(task=task, framework="PyTorch")
@@ -9,7 +12,6 @@ tain_ds_id = params["Args/tain_ds_id"]
 val_ds_id = params["Args/val_ds_id"]
 epochs = params["Args/epochs"]
 
-model = YOLO(f"{model_variant}.yaml")  # build a new model from scratch
 
 train_ds = Dataset.get(
         dataset_id=tain_ds_id
@@ -28,7 +30,15 @@ data_config = {
     'names': ['alpaca']      # 类别名称
 }
 
-args = dict(data=data_config, epochs=epochs)
+# 保存字典为临时 YAML 文件
+with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as temp_file:
+    yaml.dump(data_config, temp_file)
+    temp_yaml_path = temp_file.name
+
+args = dict(data=temp_yaml_path, epochs=epochs)
+
+from ultralytics import YOLO
+model = YOLO(f"{model_variant}.yaml")  # build a new model from scratch
 
 results = model.train(**args)
 
