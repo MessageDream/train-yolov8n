@@ -63,7 +63,7 @@ print(f"PyTorch model uploaded to {upload_uri}")
 
 # 转换模型为 ONNX 格式
 model.export(format="onnx", dynamic=True, opset=16)  # 导出 ONNX 模型
-onnx_name = f"model.onnx"
+onnx_name = f"{model_file_name}.onnx"
 # script_dir = path.dirname(path.abspath(__file__))
 onnx_path = path.join(local_dir, onnx_name)
 # remote_dir_path = uploaded_model_uri.rsplit('/', 1)[0]  # 移除最后的文件部分
@@ -75,9 +75,9 @@ onnx_path = path.join(local_dir, onnx_name)
 # uploaded_onnx_model_uri = task.update_output_model(model_path=onnx_path, model_name=f"{task.name}-onnx")
 output_model_onnx = OutputModel(task=task,name=f"{task.name}-onnx",comment="ONNX", framework="ONNX")
 uploaded_onnx_model_uri = output_model_onnx.update_weights(
-    weights_filename=onnx_name,
+    weights_filename=onnx_path,
     upload_uri=upload_uri,
-    target_filename=onnx_name
+    target_filename="model.onnx"
     )
 print(f"ONNX model uploaded to {uploaded_onnx_model_uri}")
 # output_model_onnx.publish()  # 可选：将 ONNX 模型发布
