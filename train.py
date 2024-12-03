@@ -22,7 +22,7 @@ data_config = {
     'train': 'train',
     'val': 'validation',
     'test': 'test',
-    'names': ['alpaca']
+    'names': {0: "alpaca"}
 }
 
 # 保存字典为临时 YAML 文件
@@ -48,8 +48,8 @@ model_file_name = "best"
 
 # upload_storage_uri
 output_models = task.models["output"]
-print(f"Output models: {output_models}")
-best_models = [m for m in output_models if "best" in m.name][0]
+print(f"Output models: {[m.name for m in output_models]}")
+best_models = [m for m in output_models if "best" in m.name]
 if not best_models:
     print("No best model found")
     exit(1)
