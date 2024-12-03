@@ -57,8 +57,8 @@ print(f"PyTorch model uploaded to {uploaded_model_uri}")
 # 转换模型为 ONNX 格式
 model.export(format="onnx", dynamic=True, opset=16)  # 导出 ONNX 模型
 onnx_name = f"{model_file_name}.onnx"
-script_dir = path.dirname(path.abspath(__file__))
-onnx_path = path.join(script_dir, onnx_name)
+# script_dir = path.dirname(path.abspath(__file__))
+onnx_path = path.join(local_dir, onnx_name)
 
 # print(f"ONNX model exported to {onnx_path}")
 
