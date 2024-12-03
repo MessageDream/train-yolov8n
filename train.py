@@ -46,6 +46,8 @@ print("Training completed results:", results)
 local_dir = "runs/detect/train/weights/"
 model_file_name = "best"
 
+print(f"storage_uri:{task.storage_uri}")
+
 uploaded_model_uri = task.update_output_model(model_path=f"{local_dir}{model_file_name}.pt", model_name=f"{task.name}-pt")
 
 # # 上传训练完成的 PyTorch 模型
