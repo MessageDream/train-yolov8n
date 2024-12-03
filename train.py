@@ -48,11 +48,11 @@ model_file_name = "best"
 
 # upload_storage_uri
 output_models = task.models["output"]
-print(f"Output models: {[m.name for m in output_models]}")
-best_models = [m for m in output_models if "best" in m.name]
+best_models = [m for m in output_models if m.upload_storage_uri]
 if not best_models:
     print("No best model found")
     exit(1)
+print(f"Output models: {[m.name for m in best_models]}")
 best_model = best_models[0]
 
 uploaded_model_uri = best_model.upload_storage_uri;
@@ -74,14 +74,18 @@ onnx_name = f"{model_file_name}.onnx"
 # script_dir = path.dirname(path.abspath(__file__))
 onnx_path = path.join(local_dir, onnx_name)
 remote_dir_path = uploaded_model_uri.rsplit('/', 1)[0]  # 移除最后的文件部分
-task.storage_uri = f"{remote_dir_path}/{onnx_name}"
+upload_uri = f"{remote_dir_path}/{onnx_name}"
 
 # print(f"ONNX model exported to {onnx_path}")
 
 # 上传 ONNX 模型到 ClearML
-uploaded_onnx_model_uri = task.update_output_model(model_path=onnx_path, model_name=f"{task.name}-onnx")
-# output_model_onnx = OutputModel(task=task,name=f"{task.name}-onnx",comment="ONNX", framework="ONNX")
-# uploaded_onnx_model_uri = output_model_onnx.update_weights(weights_filename=onnx_name)
+# uploaded_onnx_model_uri = task.update_output_model(model_path=onnx_path, model_name=f"{task.name}-onnx")
+output_model_onnx = OutputModel(task=task,name=f"{task.name}-onnx",comment="ONNX", framework="ONNX")
+uploaded_onnx_model_uri = output_model_onnx.update_weights(
+    weights_filename=onnx_name,
+    upload_uri=upload_uri,
+    target_filename=onnx_name
+    )
 print(f"ONNX model uploaded to {uploaded_onnx_model_uri}")
 # output_model_onnx.publish()  # 可选：将 ONNX 模型发布
 
