@@ -48,7 +48,12 @@ model_file_name = "best"
 
 # upload_storage_uri
 output_models = task.models["output"]
-best_model = [m for m in output_models if m.name == f"{task.name}-best"][0]
+print(f"Output models: {output_models}")
+best_models = [m for m in output_models if "best" in m.name][0]
+if not best_models:
+    print("No best model found")
+    exit(1)
+best_model = best_models[0]
 
 uploaded_model_uri = best_model.upload_storage_uri;
 print(f"PyTorch model uploaded to {uploaded_model_uri}")
