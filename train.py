@@ -2,7 +2,7 @@ from os import path
 import yaml
 import tempfile
 
-from clearml import Task,Dataset,OutputModel
+from clearml import Task,Dataset,OutputModel,backend_api
 
 
 task = Task.current_task()
@@ -47,16 +47,9 @@ local_dir = "runs/detect/train/weights/"
 model_file_name = "best"
 
 # upload_storage_uri
-output_models = task.models["output"]
-best_models = [m for m in output_models if m.upload_storage_uri]
-if not best_models:
-    print("No best model found")
-    exit(1)
-print(f"Output models: {[m.name for m in best_models]}")
-best_model = best_models[0]
 
-uploaded_model_uri = best_model.upload_storage_uri;
-print(f"PyTorch model uploaded to {uploaded_model_uri}")
+upload_uri = backend_api.Session.get_files_server_host();
+print(f"PyTorch model uploaded to {upload_uri}")
 
 # uploaded_model_uri = task.update_output_model(model_path=f"{local_dir}{model_file_name}.pt", model_name=f"{task.name}-pt")
 
@@ -73,8 +66,8 @@ model.export(format="onnx", dynamic=True, opset=16)  # 导出 ONNX 模型
 onnx_name = f"{model_file_name}.onnx"
 # script_dir = path.dirname(path.abspath(__file__))
 onnx_path = path.join(local_dir, onnx_name)
-remote_dir_path = uploaded_model_uri.rsplit('/', 1)[0]  # 移除最后的文件部分
-upload_uri = f"{remote_dir_path}/{onnx_name}"
+# remote_dir_path = uploaded_model_uri.rsplit('/', 1)[0]  # 移除最后的文件部分
+# upload_uri = f"{remote_dir_path}/{onnx_name}"
 
 # print(f"ONNX model exported to {onnx_path}")
 
